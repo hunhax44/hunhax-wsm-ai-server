@@ -1,8 +1,8 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.get("/")
 def home():
     return jsonify({
         "name": "WSM AI Server",
@@ -10,10 +10,27 @@ def home():
         "version": "1.0.0"
     })
 
-@app.route("/health")
+@app.get("/health")
 def health():
     return jsonify({
         "status": "ok"
+    })
+
+@app.get("/languages")
+def languages():
+    return jsonify([
+        {"code": "tr", "name": "Türkçe"},
+        {"code": "en", "name": "English"}
+    ])
+
+@app.post("/translate")
+def translate():
+    data = request.get_json()
+
+    return jsonify({
+        "success": True,
+        "message": "API çalışıyor.",
+        "received": data
     })
 
 if __name__ == "__main__":

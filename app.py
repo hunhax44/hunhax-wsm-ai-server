@@ -22,6 +22,8 @@ def languages():
         {"code": "tr", "name": "Türkçe"},
         {"code": "en", "name": "English"}
     ])
+
+
 @app.post("/translate")
 def translate():
     data = request.get_json()

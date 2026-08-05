@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
+from argos_service import translate as argos_translate
 
 app = Flask(__name__)
+
 
 @app.get("/")
 def home():
@@ -10,11 +12,13 @@ def home():
         "version": "1.0.0"
     })
 
+
 @app.get("/health")
 def health():
     return jsonify({
         "status": "ok"
     })
+
 
 @app.get("/languages")
 def languages():
@@ -25,8 +29,15 @@ def languages():
 
 
 @app.post("/translate")
-def translate():
+def translate_text():
+
     data = request.get_json()
+
+    if not data:
+        return jsonify({
+            "success": False,
+            "message": "JSON veri yok"
+        }), 400
 
     text = data.get("text", "")
     source_lang = data.get("source_lang", "auto")
@@ -38,9 +49,30 @@ def translate():
             "message": "Metin boş"
         }), 400
 
-    # TEST ÇEVİRİSİ
-    # Argos bağlanınca burası değişecek
-    translated_text = "[ÇEVRİLDİ] " + text
+
+    # Auto detect şimdilik
+    # Argos doğrudan kaynak dil ister.
+    if source_lang == "auto":
+        source_lang = "en"
+
+
+    try:
+
+        translated_text = argos_translate(
+            text,
+            source_lang,
+            target_lang
+        )
+
+
+    except Exception as e:
+
+        return jsonify({
+            "success": False,
+            "message": str(e)
+        }), 500
+
+
 
     return jsonify({
         "success": True,
@@ -49,5 +81,9 @@ def translate():
         "target_lang": target_lang
     })
 
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(
+        host="0.0.0.0",
+        port=5000
+    )

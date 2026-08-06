@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from argos_service import translate as argos_translate
+from services.argos_service import translate as argos_translate
 
 app = Flask(__name__)
 

@@ -1,4 +1,3 @@
-import argostranslate.package
 import argostranslate.translate
 
 
@@ -7,6 +6,7 @@ def get_installed_languages():
 
 
 def translate(text, source_code, target_code):
+
     installed_languages = get_installed_languages()
 
     from_lang = next(
